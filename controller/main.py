@@ -26,7 +26,7 @@ class main_class():
                     debug_input = int(input("choose 1 item: "))
                     if debug_input == 1:  # import the posts from file
                         file_io = fio.FileIO()
-                        posts_dict = file_io.read_file(r"G:\My Drive\cong_viec\GitHub\Python\jobauto\src\Singapura Test Pass Quang.xlsx")
+                        posts_dict = file_io.read_file(r"/home/ubuntu/GoogleDrive/cong_viec/GitHub/Python/jobauto/src/Singapura Test Pass Quang.xlsx")
                         #create the posts from list of posts
                         self.controller.create_wordpress_post(posts_dict, self.settings)
 
