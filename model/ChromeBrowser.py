@@ -44,7 +44,7 @@ class ChromeBrowser(object):
     def browser(self):
         browser = None
         # try:
-        browser = webdriver.Chrome(executable_path=which(self.setting["DRIVER_EXECUTABLE"]), options=self.options)
+        browser = webdriver.Chrome(executable_path=self.setting["DRIVER_EXECUTABLE"], options=self.options)
         # except:
         #     print("Might need to download new driver to match current installed version. download from https://chromedriver.chromium.org/downloads")
             #print(traceback.format_exc())

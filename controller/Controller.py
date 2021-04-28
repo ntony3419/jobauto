@@ -56,11 +56,28 @@ class Controller(object):
                     self.click_btn(browser, 10, 1, None,
                                    f"//select[@id='mm']/option[{values.month}]")  # select month  from list
                     # add day
-                    self.send_text(browser, 10, 1, None, "//input[@id='jj']", values.day)
+                        #click into the day box, delete old value
+                    self.click_btn(browser, 10, 1, None, "//input[@id='jj']")  # select month  from list
+                        #delete all old value,
+                    ActionChains(browser).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).perform() #perform ctrl A
+                    self.send_text(browser, 10, 1, None, "//input[@id='jj']", values.day) #new value
+
                     # add year
+                        # click into the year box, delete old value
+                    self.click_btn(browser, 10, 1, None, "//input[@id='aa']")  # select month  from list
+                    ActionChains(browser).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).perform()#perform ctrl A
                     self.send_text(browser, 10, 1, None, "//input[@id='aa']", values.year)
+
                     # add time
+                    # click into the year box, delete old value
+                    self.click_btn(browser, 10, 1, None, "//input[@id='hh']")  # select month  from list
+                    ActionChains(browser).key_down(Keys.CONTROL).send_keys("a").key_up(
+                        Keys.CONTROL).perform()  # perform ctrl A
                     self.send_text(browser, 10, 1, None, "//input[@id='hh']", "09")  # hour
+                    #minute
+                    self.click_btn(browser, 10, 1, None, "//input[@id='mn']")  # select month  from list
+                    ActionChains(browser).key_down(Keys.CONTROL).send_keys("a").key_up(
+                        Keys.CONTROL).perform()  # perform ctrl A
                     self.send_text(browser, 10, 1, None, "//input[@id='mn']", "00")  # minute
                     #click ok
                     self.click_btn(browser, 10, 1, None,"//p/a[contains(@href,'#edit_timestamp')][1]")  # click edit button
