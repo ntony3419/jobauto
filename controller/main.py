@@ -1,5 +1,6 @@
 import gui.MainWindow as mw
-import model.WordpressPost as wordpress
+import model.WordpressPost as wordpress_post
+import model.WordPress as wordpress
 import controller.FileIO as fio
 import tkinter as tk
 import controller.Controller as controller
@@ -9,10 +10,10 @@ import controller.Setting as setting
 class main_class():
     def __init__(self):
         super().__init__()
-
-        self.controller =  controller.Controller()
+        self.controller = controller.Controller()
         self.settings = setting.Setting().load_setting()
-
+        self.wordpress_default = setting.Setting().load_wordpress_default()
+        self.wordpress_default.display()
 
     def main(self):
         program_stop = False
@@ -25,10 +26,15 @@ class main_class():
                     self.debug_menu()
                     debug_input = int(input("choose 1 item: "))
                     if debug_input == 1:  # import the posts from file
+                        posts_list =[]
                         file_io = fio.FileIO()
-                        posts_dict = file_io.read_file(r"/home/ubuntu/GoogleDrive/cong_viec/GitHub/Python/jobauto/src/Singapura Test Pass Quang.xlsx")
+                        file_io.read_file(posts_list, r"C:\Users\nguye\Documents\github\python\resources\Singapura Test Pass Quang.xlsx")
+                        # display list of posts for checking
+                        for post in posts_list:
+                            print(post.display())
+
                         #create the posts from list of posts
-                        self.controller.create_wordpress_post(posts_dict, self.settings)
+                        self.controller.create_wordpress_post(posts_list, self.settings, self.wordpress_default)
 
                     if debug_input == 2:  # open url and login
                         pass
