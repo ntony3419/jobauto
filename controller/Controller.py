@@ -66,7 +66,7 @@ class Controller(object):
         self.set_location(post, browser)
         ''' set feature image - no need'''
 
-        # TODO: modify this part to add feature image ( sending image failed)
+
         ''' self.click_btn(browser, 10, 1, None, "//a[contains(@title, 'Set featured image')]") 
             select_image = browser.find_element_by_xpath("//a[@id='__wp-uploader-id-4']") #select image button
             select_image.send_keys(r"") 
@@ -78,13 +78,22 @@ class Controller(object):
         ''' set salary '''
         self.set_salary(post,browser,wordpress_default)
 
-
-        '''Final step click publish button '''
+        '''Final step click publish button or save draft'''
         ActionChains(browser).move_to_element(
             browser.find_element_by_xpath("//input[contains(@id, 'publish') and contains(@type,'submit')]")).perform()
-        self.click_btn(browser, 10, 1, None, "//input[contains(@id, 'publish') and contains(@type,'submit')]")  # click
-        sleep(5)  # wait for the post to be added to database
+        print("psot get satus {}".format(post.get_status()))
 
+        if post.get_status() == "draft":
+            self.click_btn(browser, 10, 1, None,
+                           "//input[@id='save-post']")  # click
+            sleep(5)  # wait for the post to be added to database
+        elif post.get_status()== "publish":
+            self.click_btn(browser, 10, 1, None, "//input[contains(@id, 'publish') and contains(@type,'submit')]")  # click
+            sleep(5)  # wait for the post to be added to database
+        else: # not sure which to select then just set the post as draft
+            self.click_btn(browser, 10, 1, None,
+                           "//input[@id='save-post']")  # click
+            sleep(5)  # wait for the post to be added to database
     def send_text(self, driver, wait_time, frequence, list_error_to_ignored, input_xpath, post):
         default_exception_to_ignore = [ElementNotSelectableException, ElementNotInteractableException,
                                        ElementNotVisibleException, NoSuchElementException]
@@ -109,7 +118,8 @@ class Controller(object):
                 .until(EC.element_to_be_clickable((By.XPATH, input_xpath)))
             clickable_btn.click()
         except Exception:
-            print(f'error in clickable_btn function {traceback.format_exc()}')
+            #print(f'error in clickable_btn function {traceback.format_exc()}')
+            print("something wrong with click button function but if noreal issue then just ignore this message/error")
 
 
     def set_publish_data(self, post, browser):
@@ -175,23 +185,28 @@ class Controller(object):
             ActionChains(browser).send_keys(post.get_company()).perform()  # send the job detail
 
     def set_author(self,post,browser,wordpress_default):
-        # TODO: modify this part to set the author correctly
+
         # get author from post and compare with wordpres preset author and return index to tick
         index = 1 #default author
+        for key, value in wordpress_default.get_author_dict().items():
+            if post.get_author().lower() in value:
+                index = key
+
         ActionChains(browser).move_to_element(
             browser.find_element_by_xpath("//select[@id='post_author_override']")).perform()
-        if post.get_author() is None:
-
-            self.click_btn(browser, 10, 1, None, f"(//select[@id='post_author_override']/option)[{index}]")  # click the tick box
-        else:
-            self.click_btn(browser, 10, 1, None,
+        self.click_btn(browser, 10, 1, None,
                            f"(//select[@id='post_author_override']/option)[{index}]")  # click the tick box
 
 
     def set_category(self,post,browser,wordpress_default):
-        # TODO: modify this part to correctly set category
+
         # get the category from post and compare with the wordpress category and return index to tick new jobs
         index = 1
+        for key, value in wordpress_default.get_category_dict().items():
+            if post.get_category().lower() in value:
+                index = key
+        ActionChains(browser).move_to_element(
+            browser.find_element_by_xpath("(//ul[@id='job_catchecklist']//input)")).perform()
         self.click_btn(browser, 10, 1, None, f"(//ul[@id='job_catchecklist']//input)[{index}]")  # click the tick box
 
     def set_salary(self,post,browser,wordpress_default):
@@ -199,7 +214,22 @@ class Controller(object):
             browser.find_element_by_xpath("//ul[@id='job_salarychecklist']")).perform()
         # get the salary from post and compare with the salary set up in wordpress_default and return index to tick
         salary_index = 4 #default value index
-        # TODO: modify this part to correctly set salary
+
+        try:
+            for key, value in wordpress_default.get_salary_dict().items(): #value is default setting of salary in WP
+                if (int(key) < 7 or ( int(key) > 25) and int(key) !=28):
+                    if post.get_salary() in value:
+                        salary_index = key
+                elif int(key) == 28:
+                    if (int(post.get_salary())+1) >= value[0]:
+                        salary_index = key
+                else:
+                    if (int(post.get_salary())+1) >= value[0] and (int(post.get_salary()))+1 < value[1]:
+                        salary_index = key
+
+        except:
+            print("salary has issue. using default value 'disclosed'")
+            #print("{}".format(traceback.format_exc()))
         self.click_btn(browser, 10, 1, None,
                            f"(//ul[@id='job_salarychecklist']/li/label/input)[{salary_index}]")  # click the tick box
 
@@ -209,7 +239,9 @@ class Controller(object):
         ActionChains(browser).move_to_element(
             browser.find_element_by_xpath("(//ul[@id='job_typechecklist'])")).perform()
         index = 1
-        #TODO: find the index of job type from wordpress_default and post.get job type
+        for key, value in wordpress_default.get_job_type_dict().items():
+            if post.get_job_type() in value:
+                index = key
         self.click_btn(browser, 10, 1, None,
                            f"(//ul[@id='job_typechecklist']/li/label/input)[{index}]")  # click the tick box
 

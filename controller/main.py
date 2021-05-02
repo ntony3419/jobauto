@@ -13,7 +13,7 @@ class main_class():
         self.controller = controller.Controller()
         self.settings = setting.Setting().load_setting()
         self.wordpress_default = setting.Setting().load_wordpress_default()
-        self.wordpress_default.display()
+        #self.wordpress_default.display()
 
     def main(self):
         program_stop = False
@@ -28,10 +28,11 @@ class main_class():
                     if debug_input == 1:  # import the posts from file
                         posts_list =[]
                         file_io = fio.FileIO()
-                        file_io.read_file(posts_list, r"C:\Users\nguye\Documents\github\python\resources\Singapura Test Pass Quang.xlsx")
-                        # display list of posts for checking
-                        for post in posts_list:
-                            print(post.display())
+                        try:
+                            file_io.read_file(posts_list, r"C:\Users\nguye\Documents\github\python\jobauto_2\resources\Singapura Test Pass Quang.xlsx")
+                        except Exception:
+                            print("read file error, maybe the file is not exist")
+
 
                         #create the posts from list of posts
                         self.controller.create_wordpress_post(posts_list, self.settings, self.wordpress_default)
@@ -62,8 +63,8 @@ class main_class():
         print("0. exit")
 
     def debug_menu(self):
-        print("1. import job from file and display imported data")
-        print("2. open the url and log in")
+        print("1. Create wordpress draft from file")
+        print("2. ")
         print("3. ")
         print("4. ")
         print("5. ")

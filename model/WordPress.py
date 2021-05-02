@@ -28,15 +28,15 @@ class WordPress(object):
         return self.__salary_dict
 
 
-    def get_post_list(self, list_of_post):
+    def set_post_list(self, list_of_post):
         self.__list_of_post = list_of_post
-    def get_author_dict(self, author_dict):
+    def set_author_dict(self, author_dict):
         self.__author_dict =author_dict
-    def get_category_dict(self, category_dict):
+    def set_category_dict(self, category_dict):
         self.__category_dict =category_dict
-    def get_job_type_dict(self, job_type_dict):
+    def set_job_type_dict(self, job_type_dict):
         self.__job_type_dict =job_type_dict
-    def get_salary_dict(self, salary_dict ):
+    def set_salary_dict(self, salary_dict ):
         self.__salary_dict =salary_dict
 
     def add_to_author_dict(self, key , author_value):

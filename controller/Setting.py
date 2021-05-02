@@ -47,24 +47,33 @@ class Setting(object):
         for section_name in self.wp_default_conf.sections():
             if section_name == "AUTHORS":
                 for key, value in self.wp_default_conf.items(section_name):
-                    wordpress_default.add_to_author_dict(key,value)
+                    wordpress_default.add_to_author_dict(key,value.lower())
             if section_name == "JOB_TYPE":
                 for key, value in self.wp_default_conf.items(section_name):
-                    wordpress_default.add_to_job_type_dict(key, value)
+                    wordpress_default.add_to_job_type_dict(key, value.lower())
             if section_name == "CATEGORY":
                 for key, value in self.wp_default_conf.items(section_name):
                     #split and trim the value into list
-                    print("test _ {}_ value short {} _ regex {} _ value full {}".format(re.sub("\([a-zA-Z]\)","", value),value[-3:], re.match("r'\([^)]*\)'", value[-3:]), value))
                     value = re.sub("\([a-zA-Z]\)","", value)
                     value = value.replace("(","") # remove parenthesis ( inside string
                     value = value.replace(")", "")# remove parenthesis ) inside string
                     value = value.split("|")
-                    value = [x.strip(' ') for x in value] #remove spces front and back
-                    value = [x.strip("()") for x in value] #remove parenthesis front and back if exist
+                    value = [x.lower().strip(' ') for x in value] #remove spces front and back and convert to lower case
+                    value = [x.lower().strip("()") for x in value] #remove parenthesis front and back if exist
                     wordpress_default.add_to_category_dict(key, value)
             if section_name == "SALARY":
                 for key, value in self.wp_default_conf.items(section_name):
-                    if bool(re.match("\$[0-9]+", value)):
-                        value = "-".join(re.findall("\$[0-9]+", value))
-                    wordpress_default.add_to_salary_dict(key, value)
+                    new_val_array =[]
+                    if (int(key) < 7 or (int(key) >25 and int(key) !=28)) : # number less than 7 and large 25 but not 28
+                        new_val_array.append(value)
+                    elif int(key) == 28:
+                        value = value.replace(">$", "")
+                        new_val_array.append(int(value))
+                    else:
+                        value = "-".join(re.findall("[0-9]+", value))
+                        value = value.split("-")
+                        value = [int(float(x)) for x in value] #convert string to integer if possble
+                        new_val_array = value
+                        ''' convert to array'''
+                    wordpress_default.add_to_salary_dict(key, new_val_array)
         return wordpress_default
