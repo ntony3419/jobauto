@@ -29,7 +29,7 @@ class main_class():
                         posts_list =[]
                         file_io = fio.FileIO()
                         try:
-                            file_io.read_file(posts_list, r"C:\Users\nguye\Documents\github\python\jobauto_2\resources\Singapura Test Pass Quang.xlsx")
+                            file_io.read_file(posts_list, r"C:\Users\nguye\Documents\github\python\jobauto_2\Singapura Test Pass Quang.xlsx")
                         except Exception:
                             print("read file error, maybe the file is not exist")
 
@@ -37,7 +37,7 @@ class main_class():
                         #create the posts from list of posts
                         self.controller.create_wordpress_post(posts_list, self.settings, self.wordpress_default)
 
-                    if debug_input == 2:  # open url and login
+                    if debug_input == 2:
                         pass
 
 
@@ -64,7 +64,7 @@ class main_class():
 
     def debug_menu(self):
         print("1. Create wordpress draft from file")
-        print("2. ")
+        print("2. Post to facebook group")
         print("3. ")
         print("4. ")
         print("5. ")

@@ -3,12 +3,12 @@
 class WordpressPost(object):
 
     #instance attribute
-    def __init__(self, status, visibility, publish_date, post_type, category, featured_image, post_title,post_detail, author,salary,job_type,location,company):
+    def __init__(self, status, visibility, publish_date, category, featured_image, post_title,post_detail, author,salary,job_type,location,company):
         super().__init__()
         self.__status = status #can edit later but default is None
         self.__visibility = visibility
         self.__publish_date = publish_date
-        self.__post_type = post_type #can edit later but default is Job
+        #self.__post_type = post_type #can edit later but default is Job
         self.__category = category
         self.__featured_image = featured_image
         self.__post_title = post_title
@@ -25,8 +25,8 @@ class WordpressPost(object):
         return self.__visibility
     def get_publish_date(self):
         return self.__publish_date
-    def get_post_type(self):
-        return self.__post_type
+    # def get_post_type(self):
+    #     return self.__post_type
     def get_category(self):
         return self.__category
     def get_featured_image(self):
@@ -54,8 +54,8 @@ class WordpressPost(object):
         self.__visibility = visibility
     def set_publish_date(self, publish_date):
         self.__publish_date = publish_date
-    def set_post_type(self, post_type):
-        self.__post_type = post_type
+    # def set_post_type(self, post_type):
+    #     self.__post_type = post_type
     def set_category(self , category):
         self.__category= category
     def set_featured_image(self, featured_image):
