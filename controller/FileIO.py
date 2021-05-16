@@ -5,9 +5,10 @@ class FileIO(object):
     def __init__(self):
         super().__init__()
 
+    def read_job_file_to_dict(self):
+        pass
 
-
-    def read_file(self,posts_list, file_name):
+    def read_job_file_to_wordpress(self,posts_list, file_name):
 
         df = pd.read_excel(file_name)
         ''' convert each row into 1 single dictionary'''

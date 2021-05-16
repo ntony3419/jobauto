@@ -1,7 +1,11 @@
-
-
+import os
+import xlwt
+from xlwt import Workbook
+import re
+import pandas
 import model.ChromeBrowser as chrome
 import traceback
+from datetime import date,datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -12,8 +16,9 @@ from time import sleep
 
 
 class Controller(object):
-    def __init__(self):
+    def __init__(self, setting):
         super().__init__()
+        self.settings = setting
 
     def create_wordpress_post(self, posts_list, settings, wordpress_default):
         browser = chrome.ChromeBrowser(settings).browser()
@@ -248,3 +253,69 @@ class Controller(object):
     def set_status(self,post, broser):
         if post.get_status() is None:
             pass #no need to do any thing here yet
+
+    def scrape_job(self, url):
+        scraped_job_file_location =None
+        browser = chrome.ChromeBrowser(self.settings).browser()
+        stop = False
+        wb = Workbook()
+        sheet1=wb.add_sheet("sheet 1")
+        row = 0
+        col = 0
+
+        sheet1.write(row, col, "title")
+        sheet1.write(row, col + 1, "company")
+        sheet1.write(row, col + 2, "location")
+        sheet1.write(row, col + 3, "detail")
+        row+=1
+
+        while stop is False:
+            # open url
+            browser.get(url)
+            # next page url
+            next_page = browser.find_element_by_xpath("""//*/div[@id="pagination"]/a[contains(text(),"Next")]""")
+            # all post urls on page
+            post_url_elements = browser.find_elements_by_xpath("//*/dl/dd[2]/h4/a")
+            post_urls = []
+            for url_element in post_url_elements:
+                post_urls.append(url_element.get_attribute("href"))
+            #scrape one post at a time and save to excel file
+            count = 0
+            while count != len(post_urls) and stop is False:
+                browser.get(post_urls[count])
+                '''collect the date and use it to determine when to stop'''
+                post_date = browser.find_element_by_xpath('''//*/span[@class="job-posted"]''').text #format 14 May
+                year = int((browser.find_element_by_xpath('''//*/span[@class="year"]''').text).strip())
+                #convert to date datatype
+                month = re.sub("[0-9]+","",post_date).strip()
+                month = int(datetime.strptime(month,'%b').strftime('%m'))
+                #test =re.findall("^[0-9]+", post_date)
+                day = int(re.findall("^[0-9]+", post_date)[0].strip())
+                post_date = date(year,month,day)
+                current_date = date.today()
+                print("nothing")
+                if (current_date - post_date).days != 0:
+                    stop = True
+                if stop is False:
+
+                    '''scrape the post that is today'''
+                    title = browser.find_element_by_xpath('''//*/h4[@class="title"]''').text.strip()
+                    company =browser.find_element_by_xpath('''//*/span[@class="job-author"]''').text.strip()
+                    location =browser.find_element_by_xpath('''//*/span[@class="jobs-place"]''').text.strip()
+                    detail =browser.find_element_by_xpath('''//*/div[@class="jobdesc"]''').text.strip()
+                    ''' write to excel file using pandas'''
+                    sheet1.write(row, col,title)
+                    sheet1.write(row, col + 1, company)
+                    sheet1.write(row, col + 2, location)
+                    sheet1.write(row, col + 3, detail)
+                    # df = pandas.DataFrame({"title": title, "company":company,"location":location, "detail":detail }, columns=["title","company","location", "details"])
+                    # file_path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-2])
+                    # df.to_excel(os.path.join(file_path, "jobs_from_singapurajob.xlsx"), index=False, header=True)
+                    count += 1
+                    row = row+1
+            url=next_page #go to next job page
+        wb.save("jobs_from_singapurajob.xls")
+        browser.close()
+        #scraped_job_file_location_path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-2])
+        scraped_job_file_location = f'''{os.path.dirname()}\{"jobs_from_singapurajob.xls"}'''
+        return scraped_job_file_location

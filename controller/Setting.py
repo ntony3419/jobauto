@@ -25,8 +25,7 @@ class Setting(object):
         settings["WP_USER_NAME"] = self.config["DEFAULT"]["WP_USER_NAME"]
         settings["WP_PASSWORD"] = self.config["DEFAULT"]["WP_PASSWORD"]
 
-        broswer_driver_path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
-
+        broswer_driver_path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-2])
         settings["DRIVER_EXECUTABLE"] = os.path.join(broswer_driver_path, self.config["DEFAULT"]["DRIVER_EXECUTABLE"])
 
         settings["CHROME_PROFILE"] = self.config["DEFAULT"]["CHROME_PROFILE"]

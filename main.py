@@ -5,14 +5,18 @@ import controller.FileIO as fio
 import tkinter as tk
 import controller.Controller as controller
 import controller.Setting as setting
+from controller.FacebookController import FacebookController
 
 
 class main_class():
     def __init__(self):
         super().__init__()
-        self.controller = controller.Controller()
         self.settings = setting.Setting().load_setting()
         self.wordpress_default = setting.Setting().load_wordpress_default()
+        self.controller = controller.Controller(self.settings)
+        self.fb_controller = FacebookController(self.settings)
+
+
         #self.wordpress_default.display()
 
     def main(self):
@@ -29,7 +33,7 @@ class main_class():
                         posts_list =[]
                         file_io = fio.FileIO()
                         try:
-                            file_io.read_file(posts_list, r"C:\Users\nguye\Documents\github\python\jobauto_2\Singapura Test Pass Quang.xlsx")
+                            file_io.read_job_file_to_wordpress(posts_list, r"C:\Users\nguye\Documents\github\python\jobauto_2\Singapura Test Pass Quang.xlsx")
                         except Exception:
                             print("read file error, maybe the file is not exist")
 
@@ -38,8 +42,24 @@ class main_class():
                         self.controller.create_wordpress_post(posts_list, self.settings, self.wordpress_default)
 
                     if debug_input == 2:
-                        pass
+                        '''Post to facebook group'''
+                        # prepare the post to use by scrape post from job site
+                        #url = #"https://singapurajobs.com/lastest-jobs"
+                        url = "https://www.singapurajobs.com/latest-jobs/"
 
+                        scraped_job_file_location = self.controller.scrape_job(url)
+
+                        posts_list = []
+                        file_io = fio.FileIO()
+                        try:
+                            file_io.read_job_file_to_wordpress(posts_list, scraped_job_file_location)
+                        except Exception:
+                            print("read file error, maybe the file is not exist")
+
+
+
+                    if debug_input == 3:
+                        pass
 
 
                     if debug_input == 9:
