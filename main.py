@@ -48,11 +48,10 @@ class main_class():
                         url = "https://www.singapurajobs.com/latest-jobs/"
 
                         scraped_job_file_location = self.controller.scrape_job(url)
-
                         posts_list = []
                         file_io = fio.FileIO()
                         try:
-                            file_io.read_job_file_to_wordpress(posts_list, scraped_job_file_location)
+                            file_io.read_job_file_to_dict(posts_list, scraped_job_file_location)
                         except Exception:
                             print("read file error, maybe the file is not exist")
 
