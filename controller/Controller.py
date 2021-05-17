@@ -268,20 +268,21 @@ class Controller(object):
         sheet1.write(row, col + 2, "location")
         sheet1.write(row, col + 3, "detail")
         row+=1
-
+        total_post=0
         while stop is False:
+            count = 0
             # open url
             browser.get(url)
             # next page url
-            next_page = browser.find_element_by_xpath("""//*/div[@id="pagination"]/a[contains(text(),"Next")]""")
+            next_page = browser.find_element_by_xpath("""//*/div[@id="pagination"]/a[contains(text(),"Next")]""").get_attribute("href")
             # all post urls on page
             post_url_elements = browser.find_elements_by_xpath("//*/dl/dd[2]/h4/a")
             post_urls = []
             for url_element in post_url_elements:
                 post_urls.append(url_element.get_attribute("href"))
             #scrape one post at a time and save to excel file
-            count = 0
-            while count != len(post_urls) and stop is False:
+
+            while count < len(post_urls) and stop is False:
                 browser.get(post_urls[count])
                 '''collect the date and use it to determine when to stop'''
                 post_date = browser.find_element_by_xpath('''//*/span[@class="job-posted"]''').text #format 14 May
@@ -293,7 +294,7 @@ class Controller(object):
                 day = int(re.findall("^[0-9]+", post_date)[0].strip())
                 post_date = date(year,month,day)
                 current_date = date.today()
-                print("nothing")
+
                 if (current_date - post_date).days != 0:
                     stop = True
                 if stop is False:
@@ -312,10 +313,13 @@ class Controller(object):
                     # file_path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-2])
                     # df.to_excel(os.path.join(file_path, "jobs_from_singapurajob.xlsx"), index=False, header=True)
                     count += 1
+                    total_post+=1
                     row = row+1
+
             url=next_page #go to next job page
+        print(f"amount of job today {date.today()} are {total_post}")
         wb.save("jobs_from_singapurajob.xls")
         browser.close()
-        #scraped_job_file_location_path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-2])
-        scraped_job_file_location = f'''{os.path.dirname()}\{"jobs_from_singapurajob.xls"}'''
+        scraped_job_file_location_path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-2])
+        scraped_job_file_location = f'''{scraped_job_file_location_path}\{"jobs_from_singapurajob.xls"}'''
         return scraped_job_file_location

@@ -17,8 +17,13 @@ class ChromeBrowser(object):
         super().__init__()
         self.setting = setting
         self.options = Chrome_Options()
+        profile_path = r"user-data-dir={}".format(setting["CHROME_PROFILE_PATH"])
+        profile = r"profile-directory={}".format(setting["CHROME_PROFILE"])
+
         if setting["CHROME_PROFILE"].lower() != "null":
-            self.options.add_argument(f"user-data-dir={setting['CHROME_PROFILE']}")
+            self.options.add_argument(profile_path)
+            self.options.add_argument(profile)
+            #self.options.add_argument(f"user-data-dir={setting['CHROME_PROFILE']}")
         if setting["HEADLESS"].lower() == "true":
             self.options.add_argument("--headless")
         self.options.add_argument("--no-sandbox")
@@ -33,11 +38,8 @@ class ChromeBrowser(object):
         self.options.add_experimental_option("useAutomationExtension", False)
         self.options.add_argument("--disable-blink-features=AutomationControlled")
         ''' changing user agent - this is not really needed but in case selenium use unmatch user agent associate with the version of chrome.'''
-        if setting["USER_AGENT"] is True:  # find user agent from search engine
-            self.options.add_argument(self.get_chrome_browser_agent())
-        elif setting["USER_AGENT"] is False:  # no need to worry about user_agent
-            pass
-        else:  # custom user agent from setting.conf
+        if setting["USER_AGENT"] is not None:  # find user agent from search engine
+            #self.options.add_argument(self.get_chrome_browser_agent())
             self.options.add_argument(setting["USER_AGENT"])
         print(self.setting)
 

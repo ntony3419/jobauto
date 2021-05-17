@@ -26,12 +26,15 @@ class Setting(object):
         settings["WP_PASSWORD"] = self.config["DEFAULT"]["WP_PASSWORD"]
 
         broswer_driver_path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-2])
-        settings["DRIVER_EXECUTABLE"] = os.path.join(broswer_driver_path, self.config["DEFAULT"]["DRIVER_EXECUTABLE"])
-
-        settings["CHROME_PROFILE"] = self.config["DEFAULT"]["CHROME_PROFILE"]
-        settings["USER_AGENT"] = self.config["DEFAULT"]["USER_AGENT"]
-        settings["HEADLESS"] = self.config["DEFAULT"]["HEADLESS"]
-
+        settings["DRIVER_EXECUTABLE"] = os.path.join(broswer_driver_path, self.config["GOOGLE_CHROME"]["DRIVER_EXECUTABLE"])
+        settings["CHROME_PROFILE_PATH"] = self.config["GOOGLE_CHROME"]["CHROME_PROFILE_PATH"]
+        settings["CHROME_PROFILE"] = self.config["GOOGLE_CHROME"]["CHROME_PROFILE"]
+        if self.config["GOOGLE_CHROME"]["USER_AGENT"].lower == 'none':
+            settings["USER_AGENT"] =  (self.config["GOOGLE_CHROME"]["USER_AGENT"]).replace("'", "")
+        else:
+            settings["USER_AGENT"] = None
+        settings["HEADLESS"] = self.config["GOOGLE_CHROME"]["HEADLESS"]
+        settings["GROUP_TO_SHARE"] = self.config["FACEBOOK"]["GROUP_TO_SHARE"]
         return settings
 
     def load_wordpress_default(self):

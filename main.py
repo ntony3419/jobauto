@@ -58,7 +58,14 @@ class main_class():
 
 
                     if debug_input == 3:
-                        pass
+
+                        posts_list = []
+                        file_io = fio.FileIO()
+                        scraped_job_file_location = r"C:\Users\quang nguyen\PycharmProjects\python\jobauto\jobs_from_singapurajob.xls"
+                        try:
+                            file_io.read_job_file_to_dict(posts_list, scraped_job_file_location)
+                        except Exception:
+                            print("read file error, maybe the file is not exist")
 
 
                     if debug_input == 9:

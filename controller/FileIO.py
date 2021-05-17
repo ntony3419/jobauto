@@ -5,9 +5,10 @@ class FileIO(object):
     def __init__(self):
         super().__init__()
 
-    def read_job_file_to_dict(self):
-        pass
-
+    def read_job_file_to_dict(self,posts_list, scraped_job_file_location):
+        df = pd.read_excel(scraped_job_file_location)
+        posts_dict = df.to_dict("index")
+        print("nothing")
     def read_job_file_to_wordpress(self,posts_list, file_name):
 
         df = pd.read_excel(file_name)
