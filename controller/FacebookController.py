@@ -5,6 +5,7 @@ import random
 from time import sleep
 import csv
 from model.ChromeBrowser import ChromeBrowser
+from controller.Controller import Controller
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -17,6 +18,7 @@ class FacebookController(object):
         super().__init__()
         self.setting = setting
         self.sca = ChromeBrowser(self.setting);
+        self.controler = Controller(self.setting)
 
     ''' name: share_to_group
         Excert: wrapper method to share to group function
@@ -78,7 +80,7 @@ class FacebookController(object):
             # open browser and check joined status
 
             if init_group_list[rand_index] not in joined_group:  # if the selected url is not added in joined_group
-                browser = self.sca.browser(self.setting)
+                browser = self.sca.browser()
                 browser.get(init_group_list[rand_index])
                 # check for the invite_button - if there is invite button then group is joined
                 invite_btn_xpath = """(//*[contains(@role,"button")]/div//span[contains(text(),"Invite")])[2]"""
@@ -136,7 +138,7 @@ class FacebookController(object):
        '''
 
     def share_to_group(self, group_url, post_content):
-        browser = self.sca.browser(self.setting)
+        browser = self.sca.browser()
         browser.get(group_url)
         create_post_btn_xpath = '''//*[contains(text(),"Create a public post")] | //*[contains(text(),"Start Discussion")] |//*/span[contains(text(),"What's on your mind")]'''
         # '''//*[contains(text(),"Create a public post")] | //*[contains(text(),"Start Discussion")]'''
@@ -162,7 +164,7 @@ class FacebookController(object):
         post_btn_xpath = '''//*/div[contains(@role,"button")]/div/div/div/span/span[contains(text(),"Post")]'''
 
         try:
-            self.send_text(browser, 10, 2, None, text_field_xpath, post_content)
+            self.controler.send_text(browser, 10, 2, None, text_field_xpath, post_content)
             post_btn = self.clickable_btn(browser, 30, 2, None, post_btn_xpath)
             sleep(5)
             post_btn.click()

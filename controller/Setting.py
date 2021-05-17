@@ -16,7 +16,7 @@ class Setting(object):
         settings = {}
         try:
             config_file_path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
-            self.config.read(os.path.join(config_file_path, 'setting.conf'))
+            self.config.read(os.path.join(config_file_path, '../setting.conf'))
 
         except:
             print("read setting file Error")
@@ -34,7 +34,7 @@ class Setting(object):
         else:
             settings["USER_AGENT"] = None
         settings["HEADLESS"] = self.config["GOOGLE_CHROME"]["HEADLESS"]
-        settings["GROUP_TO_SHARE"] = self.config["FACEBOOK"]["GROUP_TO_SHARE"]
+        settings["GROUP_TO_SHARE"] = int(self.config["FACEBOOK"]["GROUP_TO_SHARE"])
         return settings
 
     def load_wordpress_default(self):

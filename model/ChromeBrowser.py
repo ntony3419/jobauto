@@ -41,15 +41,15 @@ class ChromeBrowser(object):
         if setting["USER_AGENT"] is not None:  # find user agent from search engine
             #self.options.add_argument(self.get_chrome_browser_agent())
             self.options.add_argument(setting["USER_AGENT"])
-        print(self.setting)
+
 
     def browser(self):
         browser = None
-        # try:
-        browser = webdriver.Chrome(executable_path=self.setting["DRIVER_EXECUTABLE"], options=self.options)
-        # except:
-        #     print("Might need to download new driver to match current installed version. download from https://chromedriver.chromium.org/downloads")
-            #print(traceback.format_exc())
+        try:
+            browser = webdriver.Chrome(executable_path=self.setting["DRIVER_EXECUTABLE"], options=self.options)
+        except:
+            print("Might need to download new driver to match current installed version. download from https://chromedriver.chromium.org/downloads\nOR \n Close all the Google Chrome browser that currently open")
+            #print(f"{traceback.format_exc()}")
             #sys.exit(1)
         return browser
 

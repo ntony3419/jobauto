@@ -86,7 +86,7 @@ class Controller(object):
         '''Final step click publish button or save draft'''
         ActionChains(browser).move_to_element(
             browser.find_element_by_xpath("//input[contains(@id, 'publish') and contains(@type,'submit')]")).perform()
-        print("psot get satus {}".format(post.get_status()))
+        print("post get satus {}".format(post.get_status()))
 
         if post.get_status() == "draft":
             self.click_btn(browser, 10, 1, None,
@@ -264,9 +264,10 @@ class Controller(object):
         col = 0
 
         sheet1.write(row, col, "title")
-        sheet1.write(row, col + 1, "company")
-        sheet1.write(row, col + 2, "location")
-        sheet1.write(row, col + 3, "detail")
+        sheet1.write(row, col+1, "url")
+        sheet1.write(row, col + 2, "company")
+        sheet1.write(row, col + 3, "location")
+        sheet1.write(row, col + 4, "detail")
         row+=1
         total_post=0
         while stop is False:
@@ -305,10 +306,12 @@ class Controller(object):
                     location =browser.find_element_by_xpath('''//*/span[@class="jobs-place"]''').text.strip()
                     detail =browser.find_element_by_xpath('''//*/div[@class="jobdesc"]''').text.strip()
                     ''' write to excel file using pandas'''
+                    url = post_urls[count]
                     sheet1.write(row, col,title)
-                    sheet1.write(row, col + 1, company)
-                    sheet1.write(row, col + 2, location)
-                    sheet1.write(row, col + 3, detail)
+                    sheet1.write(row, col+1, url)
+                    sheet1.write(row, col + 2, company)
+                    sheet1.write(row, col + 3, location)
+                    sheet1.write(row, col + 4, detail)
                     # df = pandas.DataFrame({"title": title, "company":company,"location":location, "detail":detail }, columns=["title","company","location", "details"])
                     # file_path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-2])
                     # df.to_excel(os.path.join(file_path, "jobs_from_singapurajob.xlsx"), index=False, header=True)
